@@ -673,17 +673,30 @@ class AX_12A:
             
     @classmethod
     def getAll(cls, method):
+        """
+        Runs the same .get...() method on all connected motors.
+        Returns a list of all the values captured.
+        """
         method = 'motor.' + method + '()'
         motors = AX_12A.listInstances()
+        gets = []
         for motor in motors:
-            eval(method)
+            gets.append(eval(method))
+        return gets
             
     @classmethod
     def setAll(cls, method, value):
+        """
+        Runs the same .set...(value) method on all connected motors.
+        Returns a list of all the values captured (will be 'None' for every motor
+            that executes without errors).
+        """
         method = 'motor.' + method + '(' + str(value) + ')'
         motors = AX_12A.listInstances()
+        setErrorResults = []
         for motor in motors:
-            eval(method)
+            setErrorResults.append(eval(method))
+        return setErrorResults
 
     @classmethod
     def setPose(cls, positions):
