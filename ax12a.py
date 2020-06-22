@@ -665,6 +665,25 @@ class AX_12A:
     def listInstances(cls):
         return(cls.instances)
 
+    @classmethod
+    def connectAll(cls):
+        motors = AX_12A.listInstances()
+        for motor in motors:
+            motor.connect()
+            
+    @classmethod
+    def getAll(cls, method):
+        method = 'motor.' + method + '()'
+        motors = AX_12A.listInstances()
+        for motor in motors:
+            eval(method)
+            
+    @classmethod
+    def setAll(cls, method, value):
+        method = 'motor.' + method + '(' + str(value) + ')'
+        motors = AX_12A.listInstances()
+        for motor in motors:
+            eval(method)
 
     @classmethod
     def setPose(cls, positions):
