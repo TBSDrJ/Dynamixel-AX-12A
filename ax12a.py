@@ -28,8 +28,9 @@ class AX_12A:
         # Keep a list of all instances of this class for making poses
         self.__class__.instances.append(self)
 
-        # Control table addresses. Look up in eManual, using decimal not hex.
+        # Control table addresses. Look up in eManual, I am using decimal not hex.
         ### EEPROM: If writing to EEPROM, put in a 250 ms delay or you risk memory corruption.
+        ### All of my methods below already have this delay built in.
         #   EEPROM changes are preserved until changed again, even if powered down.
         self.ADDR_MODEL_NUMBER          = 0     # Size 2 bytes  Default Value 12            READ ONLY
         self.ADDR_FIRMWARE_VERSION      = 2     # Size 1 byte   Default Value 2             READ ONLY
