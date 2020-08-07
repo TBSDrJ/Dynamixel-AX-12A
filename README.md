@@ -28,5 +28,9 @@ Setting up a new instance of the class takes zero to four keyword arguments:
 
 ### Attributes
 
-Each of the keyword arguments, above, is also an attribute.  In addition:
+Each of the keyword arguments, above, is also an attribute for each instance.  In addition:
 * connected: default = False. Set to True after the Dynamixel is connected (see connect() method below).
+* Each memory address is also a constant attribute in the form ADDR_XXX (e.g. ADDR_ID or ADDR_GOAL_POSITION).  I followed Leon's names as he set them up in the Dynamixel SDK, which occasionally differ slightly from the eManuals.  The complete list can be seen in the source code.
+
+The class itself has one attribute:
+* AX_12A.instances: default = []. This is a list of all instances of the class, automatically added by the init() method. Notice that this means that instances could be in this list even though the associated motors have not been connected. This is intended for internal use, the method AX_12A.listInstances() will return this list.
