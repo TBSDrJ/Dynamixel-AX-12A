@@ -220,14 +220,18 @@ Sample Codes:
   * [`getCWAngleLimit()`](#getcwanglelimit)
   * [`getCCWAngleLimit()`](#getccwanglelimit)
   * [`getMovingSpeed()`](#getmovingspeed)
+  * [`getPresentPosition()`](#getpresentposition)
+  * [`getPresentSpeed()`](#getpresentspeed)
+  * [`getPresentLoad()`](#getpresentload)
+  * [`getPresentVoltage()`](#getpresentvoltage)
+  * [`getPresentTemperature()`](#getpresenttemperature)
+  * [`getMoving()`](#getmoving)
   * [`setCWAngleLimit()`](#setcwanglelimit)
   * [`setCCWAngleLimit()`](#setccwanglelimit)
   * [`setGoalPosition()`](#setgoalposition)
   * [`setID()`](#setid)
   * [`setLED()`](#setled)
   * [`setMovingSpeed()`](#setmovingspeed)
-  * [``](#)
-  * [``](#)
 
 #### `connect()`
  * Inputs: None
@@ -363,6 +367,65 @@ while True:
     stop()
 ```    
 
+#### `getPresentPosition()`
+  * Inputs: None
+  * Returns: An integer 0 - 1023, showing the *actual* position of the Dynamixel.
+  * Description: This function will return the actual present position of the Dynamixel, assuming it is in the 300 degree range where Joint Mode is active.  I forget what happens if the Dynamixel is in Wheel Mode and is outside of that 300 degree range; I will test and update soon.
+  
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+pos = getPresentPosition()
+print(pos)
+# Should output something like 511 if the motor is centered.
+```
+
+#### `getPresentSpeed()`
+  * Inputs: None
+  * Returns: 
+  * Description:
+  
+Sample Code:
+```python
+```
+
+#### `getPresentLoad()`
+  * Inputs: None
+  * Returns: 
+  * Description:
+  
+Sample Code:
+```python
+```
+
+#### `getPresentVoltage()`
+  * Inputs: None
+  * Returns: 
+  * Description:
+  
+Sample Code:
+```python
+```
+
+#### `getPresentTemperature()`
+  * Inputs: None
+  * Returns: 
+  * Description:
+  
+Sample Code:
+```python
+```
+
+#### `getMoving()`
+  * Inputs: None
+  * Returns: 
+  * Description:
+  
+Sample Code:
+```python
+```
+
 #### `setCWAngleLimit()`
   * Inputs: One integer, the new CW Angle Limit.
   * Returns: 'None', or an error message if command fails.
@@ -443,6 +506,8 @@ while True:
   * Inputs: An integer, 0 - 1023.
   * Returns: `None`, or an error message if command fails.
   * Description: This is the most important command when using a Dynamixel in Wheel Mode.  Sets the Dynamixel to move at the speed set by the input value.  Also useful in Joint Mode, where it sets the speed that the motor moves when it changes to its new Goal Position.  Note that, in general, if you run the Dynamixel at lower speed, the torque should increase, so if your robot is having a hard time reaching a certain position because the load is too high, set the moving speed lower and try again.
+  
+**This needs to be updated for CW vs CCW motion.  The function itself may need work.
 
 Sample Code 1 (basic goForward with two motors):
 ```python
