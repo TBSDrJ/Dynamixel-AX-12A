@@ -51,6 +51,8 @@ Here, `connectAll()` is a class method and `setGoalPosition()` is an instance me
 
 ### Class Methods
 
+  * [`listInstances()`](#listinstances())
+
 #### `listInstances()`
   * Inputs: None
   * Returns: A list of AX_12A() objects.
