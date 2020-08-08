@@ -18,7 +18,14 @@ This library contains one class: `AX_12A()`, and no functions.
 
 ## Class `AX_12A()`
 
-### New Instances
+  * [Declaring New Instances](#declaring-new-instances)
+  * [Attributes](#attributes)
+  * [Methods](#methods)
+    * [Class Methods](#class-methods)
+    * [Most Common Instance Methods](#most-common-instance-methods)
+    * [All Other Instance Methods](#all-other-instance-methods)
+
+### Declaring New Instances
 
 Setting up a new instance of the class takes zero to four keyword arguments:
 * `id`: default = `1` (matches factory default). The ID number of your smart servo. This can be set using the [Dynamixel Wizard](http://www.robotis.us/dynamixel-management/) or this library.  **If you are changing the ID of a Dynamixel, make sure you have only that one Dynamixel hooked up.**
