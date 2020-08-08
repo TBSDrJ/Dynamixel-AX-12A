@@ -183,7 +183,6 @@ AX_12A.setPose((None, 200, 1000, 650)) # Leaves motor1 at 512, and motor5 at 745
 
 Sample Code (I used this with the [PhantomX Pincher Robot Arm](https://www.trossenrobotics.com/p/PhantomX-Pincher-Robot-Arm.aspx), replacing the Arbotix controller with a linux-based microcontroller attached using a [Robotis U2D2](http://www.robotis.us/u2d2/)):
 ```python
-from time import sleep
 motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 motor3 = AX_12A(id = 3)
@@ -191,7 +190,7 @@ motor4 = AX_12A(id = 4)
 motor5 = AX_12A(id = 5)
 AX_12A.connectAll()
 # Sleep so that you have time to move your hands from the keyboard to the robotic arm
-sleep(5)
+sleep(5) # imported from time in module
 # Release all the motors so you can move them manually
 AX_12A.setAll('setTorqueEnable', 0) 
 # Wait until the motors stop moving to read the pose
@@ -271,10 +270,9 @@ In the `readPose()` script, you could re-write the line `AX_12A.setAll('setTorqu
  
 Sample code (see readPose() above for why you might want to do this):
 ```python
-from time import sleep
 motor1 = AX_12A(id = 1)
 motor1.connect()
-sleep(3)
+sleep(3) # imported from time in module
 # Relax motor so it can be moved by hand
 motor1.disableTorque()
 # Wait until you are done moving it
