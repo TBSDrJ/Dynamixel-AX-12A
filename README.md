@@ -83,7 +83,7 @@ AX_12A.connectAll()
 ```
 
 #### `getAll()`
-  * Inputs: method: The name of an instance method that reads from the servo memory.
+  * Inputs: method: A string, the name of an instance method that reads from the servo memory.
   * Returns: A list, containing the values read from each servo.
   * Description: This will run the same `getXXX()` method on all instances and assemble the values in a single list.
 
@@ -101,10 +101,10 @@ print(positions)
 
 #### `setAll()`
   * Inputs:
-    * method: Name of an instance method that writes to the servo memory.
+    * method: A string, the name of an instance method that writes to the servo memory.
     * value: The value to be written to all servos
   * Return: A list, containing the value captured by each `setXXX()` method.  These should be `None` for each motor that successfully set the value as intended.
-  * Description: This will run the same `set{method}(value)` method on each servo.
+  * Description: This will run the same `{setmethod}(value)` method on each servo.
   
 Sample Code:
 ```python
