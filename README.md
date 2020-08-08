@@ -190,7 +190,7 @@ motor4 = AX_12A(id = 4)
 motor5 = AX_12A(id = 5)
 AX_12A.connectAll()
 # Sleep so that you have time to move your hands from the keyboard to the robotic arm
-sleep(5) # imported from time in module
+sleep(5) # imported from time in ax12a.py
 # Release all the motors so you can move them manually
 AX_12A.setAll('setTorqueEnable', 0) 
 # Wait until the motors stop moving to read the pose
