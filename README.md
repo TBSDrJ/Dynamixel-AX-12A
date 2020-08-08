@@ -115,3 +115,30 @@ errs = AX_12A.setAll('setGoalPosition', 512)
 print(errs)
 # This should center both motors and then output: [ None, None ].
 ```
+
+#### `setPose()`
+  * Input: List of integers, each a Goal Position for an AX-12A.  You can substitute `None` for any servo you wish to have hold its position.
+  * Returns: None
+  * Description: This is designed for use with a sequence of servos assembled together into a single body; this sets the body to a new 'pose' by setting the servos to new positions.  The length of the list does *not* have to be as long as the list of all servos, it will set the positions of the first *n* servos if given a list of length *n*, and leave all servos after the first *n* in their current position.  Notice that the ordering of the list depends on the order they are declared, so I strongly recommend declaring them in some order that makes sense with your construction.
+
+Sample Code (I used this with the [PhantomX Pincher Robot Arm](https://www.trossenrobotics.com/p/PhantomX-Pincher-Robot-Arm.aspx), replacing the Arbotix controller with a linux-based microcontroller attached using a [Robotis U2D2](http://www.robotis.us/u2d2/)):
+
+```python
+motor1 = AX_12A(id = 1)
+motor2 = AX_12A(id = 2)
+motor3 = AX_12A(id = 3)
+motor4 = AX_12A(id = 4)
+motor5 = AX_12A(id = 5)
+AX_12A.connectAll()
+# Set arm to a stable rest position, with pincher open
+AX_12A.setPose((512, 200, 1000, 650, 200)) # Notice double parentheses because the only argument is a list.
+AX_12A.waitForMotors()
+# Reach out with arm, leaving pincher open
+AX_12A.setPose((None, 525, 710, 625)) # Leaves motor1 at 512 and motor5 at 200
+AX_12A.waitForMotors()
+# Close pincher
+motor5.setGoalPosition(745)
+AX_12A.waitForMotors()
+# Retract arm, keeping pincher closed
+AX_12A.setPose((None, 200, 1000, 650)) # Leaves motor1 at 512, and motor5 at 745
+```
