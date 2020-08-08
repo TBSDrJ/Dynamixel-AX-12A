@@ -199,6 +199,27 @@ Sample Codes:
   
 ### Most Common Instance Methods
 
+#### `connect()`
+ * Inputs: None
+ * Outputs: None
+ * Description: Checks the connection to the motor and turns torque on; if `connect()` runs without error, then you know the motor is ready to use.  `connect()` does all of the following:
+   * Checks if the motor has already been connected, using the `.connected` attribute.
+   * Initializes the port and packet handlers set up by the Dynamixel SDK.
+   * Sets the baud rate for communication to the motor.
+   * Attempts a sample write, which enables Torque
+   * Attempts a sample read
+   * Checks if in Wheel Mode or Joint Mode
+   * If in Joint Mode, checks if the current position is out of the designated range from CW Limit to CCW Limit; if so, moves it to the closest end of the range.
+   * Set the `.connected` attribute to `True`.
+   
+See also the class method `connectAll()`.
+   
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+```
+
 #### `disableTorque()`
  * Inputs: None
  * Outputs: None
