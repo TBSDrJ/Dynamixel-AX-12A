@@ -334,6 +334,7 @@ print(motor1.getMovingSpeed())
 while True:
   print(motor1.getPresentSpeed())
 # Will output values very close to 512 as long as Dynamixel can spin freely.
+```
   
 Sample Code 2 (assuming a robot with two powered wheels):
 ```python
