@@ -219,13 +219,13 @@ Sample Codes:
   * [`enableTorque()`](#enableTorque)
   * [`getCWAngleLimit()`](#getcwanglelimit)
   * [`getCCWAngleLimit()`](#getccwanglelimit)
+  * [`getMovingSpeed()`](#getmovingspeed)
   * [`setCWAngleLimit()`](#setcwanglelimit)
   * [`setCCWAngleLimit()`](#setccwanglelimit)
   * [`setGoalPosition()`](#setgoalposition)
   * [`setID()`](#setid)
   * [`setLED()`](#setled)
-  * [``](#)
-  * [``](#)
+  * [`setMovingSpeed()`](#setmovingspeed)
   * [``](#)
   * [``](#)
 
@@ -318,6 +318,50 @@ print(ccwLimit)
 # Default output would be 1023.  For motor5 in the PhantomX Pincher Arm, it would be 745.
 ```
 
+#### `getMovingSpeed()`
+  * Inputs: None
+  * Returns: An integer, 0 - 1023, representing the *goal* moving speed of the Dynamixel.
+  * Description: In Wheel Mode, this represents the speed the motor is attempting to move at right now.  In Joint Mode, this represents the speed the motor would attempt to move at if it receives a [`setGoalPosition()`](#setgoalposition) that is different from its current position.  To get the *actual* moving speed, use [`getPresentSpeed()`](#getpresentspeed).
+
+Sample Code 1:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+# Set motor to 50% power
+motor1.setMovingSpeed(512)
+print(motor1.getMovingSpeed()) 
+# Will output 512 even if actual speed is more/less of that.
+while True:
+  print(motor1.getPresentSpeed())
+# Will output values very close to 512 as long as Dynamixel can spin freely.
+  
+Sample Code 2 (assuming a robot with two powered wheels):
+```python
+def goForward(speed):
+  # Input speed as a percentage, convert to 0 - 1023
+  speed = int(speed * 1023 / 100) 
+  motor1.setMovingSpeed(speed)
+  motor2.setMovingSpeed(speed)
+
+def stop():
+  motor1.setMovingSpeed(0)
+  motor2.setMovingSpeed(0)
+  
+motor1 = AX_12A(id = 1)
+motor2 = AX_12A(id = 2)
+AX_12A.connectAll()
+motor1.wheelMode()
+motor2.wheelMode()
+# Set motors to 50% speed
+goForward(50)
+sleep(1) # imported in ax12a.py
+while True:
+  if motor1.getMovingSpeed() - 50 > motor1.getPresentSpeed(): # If wheel on motor1 is stuck
+    stop()
+  if motor2.getMovingSpeed() - 50 > motor2.getPresentSpeed(): # If wheel on motor2 is stuck
+    stop()
+```    
+
 #### `setCWAngleLimit()`
   * Inputs: One integer, the new CW Angle Limit.
   * Returns: 'None', or an error message if command fails.
@@ -393,6 +437,25 @@ while True:
   motor1.setLED(0)
   sleep(1)
 ```
+
+#### `setMovingSpeed()`
+  * Inputs: An integer, 0 - 1023.
+  * Returns: `None`, or an error message if command fails.
+  * Description: This is the most important command when using a Dynamixel in Wheel Mode.  Sets the Dynamixel to move at the speed set by the input value.  Also useful in Joint Mode, where it sets the speed that the motor moves when it changes to its new Goal Position.  Note that, in general, if you run the Dynamixel at lower speed, the torque should increase, so if your robot is having a hard time reaching a certain position because the load is too high, set the moving speed lower and try again.
+
+Sample Code 1 (basic goForward with two motors):
+```python
+motor1 = AX_12A(id = 1)
+motor2 = AX_12A(id = 2)
+AX_12A.connectAll()
+motor1.wheelMode()
+motor2.wheelMode()
+motor1.setMovingSpeed(512) # 50% power
+motor2.setMovingSpeed(512) # 50% power
+```
+
+Sample Code 2:
+See Sample Code 2 in [`getMovingSpeed()`](#getmovingspeed), above.
 
 #### `wheelMode()`
   * Inputs: None
