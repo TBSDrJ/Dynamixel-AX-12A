@@ -215,6 +215,16 @@ Sample Codes:
   
 ### Most Common Instance Methods
 
+  * [`connect()`](#connect)
+  * [`disableTorque()`](#disabletorque)
+  * [`enableTorque()`](#enableTorque)
+  * [`getCWAngleLimit()`](#getcwanglelimit)
+  * [`getCCWAngleLimit()`](#getccwanglelimit)
+  * [`setCWAngleLimit()`](#setcwanglelimit)
+  * [`setCCWAngleLimit()`](#setccwanglelimit)
+  * [`setID()`](#setid)
+  * [``](#)
+
 #### `connect()`
  * Inputs: None
  * Outputs: None
@@ -272,3 +282,80 @@ AX_12A.waitForMotors()
 # Hold the new position
 motor1.enableTorque()
 ```
+
+#### `getCWAngleLimit()`
+  * Inputs: None
+  * Returns: The CW Angle Limit (see Description below for what this means).
+  * Description: In Joint Mode, the Dynamixel AX-12A can move within a 300 degree arc.  This arc is divided up into sections of about 0.3°, numbered 0-1023.  If you want to block your Dynamixel from being commanded to move below a certain value above 0 (for example, to avoid a collision between two body parts, or to avoid pinching a wire), then you can set a CW Angle Limit above 0.  In this case, any [`setGoalPosition()`](#setgoalposition) or [`setPose()`][#setpose) command that sends a value below that CW Angle Limit will stop at the CW Angle Limit.  Also, the [`connect()`](#connect) method will check if, on power up, if the current position is below the CW Angle Limit, and, if so, will move the Dynamixel up to the CW Angle Limit.
+
+For example, in the [PhantomX Pincher Arm](https://www.trossenrobotics.com/p/PhantomX-Pincher-Robot-Arm.aspx), the gripper motor hits fully open at 200, and then starts to close again if it goes below that.  So, we set the CW Angle Limit for motor5 on that arm to 200.
+
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+cwLimit = motor1.getCWAngleLimit()
+print(cwLimit)
+# By default, the output would be 0.  For motor5 in the PhantomX Pincher arm, it would be 200.
+```
+
+#### `getCCWAngleLimit()`
+  * Inputs: None
+  * Returns: The CCW Angle Limit
+  * Description: For more information, see [`getCWAngleLimit()`](#getcwanglelimit) above.  This returns the maximum value in the 0-1023 range that the Dynamixel is allowed to move within.
+  
+In the [PhantomX Pincher Arm](https://www.trossenrobotics.com/p/PhantomX-Pincher-Robot-Arm.aspx), we found that the gripper was closed at 745, and that, beyond that, the connectors between the motor and the 'fingers' would start to overlap, so we set the CCW Angle Limit to 745.
+
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+ccwLimit = motor1.getCCWAngleLimit()
+print(ccwLimit)
+# Default output would be 1023.  For motor5 in the PhantomX Pincher Arm, it would be 745.
+```
+
+#### `setCWAngleLimit()`
+  * Inputs: One integer, the new CW Angle Limit.
+  * Returns: 'None', or an error message if command fails.
+  * Description: See [`getCWAngleLimit()`](#getcwanglelimit) for more information on what the CW Angle Limit is used for.  This command changes the CW Angle Limit to the new provided value.  This command modifies the EEPROM, so it includes a 0.25 second sleep to avoid corrupting the firmware.
+
+Sample Code:
+```python
+motor5 = AX_12A(id = 5)
+motor5.connect()
+motor5.setCWAngleLimit(200)
+# This sets the new CW Angle Limit to 200, as we did using the PhantomX Pincher Arm.
+```
+
+#### `setCWAngleLimit()`
+  * Inputs: One integer, the new CW Angle Limit.
+  * Returns: 'None', or an error message if command fails.
+  * Description: See [`getCWAngleLimit()`](#getcwanglelimit) for more information on what the CW Angle Limit is used for.  This command changes the CW Angle Limit to the new provided value.  This command modifies the EEPROM, so it includes a 0.25 second sleep to avoid corrupting the firmware.
+
+Sample Code:
+```python
+motor5 = AX_12A(id = 5)
+motor5.connect()
+motor5.setCWAngleLimit(200)
+# This sets the new CW Angle Limit to 200, as we did using the PhantomX Pincher Arm.
+```
+
+#### `setCCWAngleLimit()`
+  * Inputs: One integer, the new CCW Angle Limit.
+  * Returns: 'None', or an error message if command fails.
+  * Description: See [`getCWAngleLimit()`](#getcwanglelimit) for more information on what the CCW Angle Limit is used for.  This command changes the CCW Angle Limit to the new provided value.  This command modifies the EEPROM, so it includes a 0.25 second sleep to avoid corrupting the firmware.
+
+
+Sample Code:
+```python
+motor5 = AX_12A(id = 5)
+motor5.connect()
+motor5.setCCWAngleLimit(745)
+# This sets the new CCW Angle Limit to 745, as we did using the PhantomX Pincher Arm.
+```
+
+#### `setID()`
+  * Inputs: One integer, the new ID value for the Dynamixel.  This must be between 0 and 253.
+  * Returns: `None`, or an error message if command fails.
+  * Description: Changes the ID in the EEPROM of the Dynamixel. It is strongly recommended that you have only one Dynamixel attached if you are changing its ID.
