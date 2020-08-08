@@ -39,10 +39,10 @@ The class itself has one attribute:
 
 Notice that there are both instance methods and class methods. An instance method applies to a single instance of the `AX_12A` class; a class method applies to the entire class (and uses the `instances` attribute to apply to each instance).  For example:
 
-`motor1 = AX_12A(id = 1)`
-`motor2 = AX_12A(id = 2)`
-`AX_12A.connectAll()`
-`motor1.setGoalPosition(512)`
-`motor2.setGoalPosition(512)`
+```motor1 = AX_12A(id = 1)
+motor2 = AX_12A(id = 2)
+AX_12A.connectAll()
+motor1.setGoalPosition(512)
+motor2.setGoalPosition(512)```
 
 Here, `connectAll()` is a class method and `setGoalPosition()` is an instance method.
