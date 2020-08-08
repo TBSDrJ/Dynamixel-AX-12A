@@ -39,7 +39,8 @@ The class itself has one attribute:
 
 Notice that there are both instance methods and class methods. An instance method applies to a single instance of the `AX_12A` class; a class method applies to the entire class (and uses the `instances` attribute to apply to each instance).  For example:
 
-```motor1 = AX_12A(id = 1)
+```python
+motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 AX_12A.connectAll()
 motor1.setGoalPosition(512)
@@ -47,3 +48,70 @@ motor2.setGoalPosition(512)
 ```
 
 Here, `connectAll()` is a class method and `setGoalPosition()` is an instance method.
+
+### Class Methods
+
+#### `listInstances()`
+  * Inputs: None
+  * Returns: A list of AX_12A() objects.
+  * Description: To get a list of all currently assigned instances of the class. Notice that each instance is added as part of the standard `init()` method, and therefore may include motors that are not yet connected.
+  
+Sample code:
+
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor2 = AX_12A(id = 2)
+l = AX_12A.listInstances()
+print(l)
+# output should be something like: [<>,<>]
+# Notice that motor1 is connected and motor2 is not, but both appear in the list, with no indication of which is connected and which is not.
+```
+
+#### `connectAll()`
+  * Inputs: None
+  * Returns: None
+  * Description: This will run the instance method `connect()` on each instance.
+  
+Sample code:
+
+```python
+motor1 = AX_12A(id = 1)
+motor2 = AX_12A(id = 2)
+AX_12A.connectAll()
+# Now both motor1 and motor2 should be ready for read/write commands.
+```
+
+#### `getAll()`
+  * Inputs: method: The name of an instance method that reads from the servo memory.
+  * Returns: A list, containing the values read from each servo.
+  * Description: This will run the same `getXXX()` method on all instances and assemble the values in a single list.
+
+Sample Code:
+
+```python
+motor1.AX_12A(id = 1)
+motor2.AX_12A(id = 2)
+AX_12A.connectAll()
+positions = AX_12A.getAll('getPresentPosition')
+print(positions)
+# output should be something like: [ 511, 510 ]
+# This output assumes both motors are very close to centered.
+```
+
+#### `setAll()`
+  * Inputs:
+    ** method: Name of an instance method that writes to the servo memory.
+    ** value: The value to be written to all servos
+  * Return: A list, containing the value captured by each `setXXX()` method.  These should be `None` for each motor that successfully set the value as intended.
+  * Description: This will run the same `set{method}(value)` method on each servo.
+  
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor2 = AX_12A(id = 2)
+AX_12A.connectAll()
+errs = AX_12A.setAll('setGoalPosition', 512)
+print(errs)
+# This should center both motors and then output: [ None, None ].
+```
