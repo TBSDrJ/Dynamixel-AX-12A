@@ -328,19 +328,6 @@ motor5.setCWAngleLimit(200)
 # This sets the new CW Angle Limit to 200, as we did using the PhantomX Pincher Arm.
 ```
 
-#### `setCWAngleLimit()`
-  * Inputs: One integer, the new CW Angle Limit.
-  * Returns: 'None', or an error message if command fails.
-  * Description: See [`getCWAngleLimit()`](#getcwanglelimit) for more information on what the CW Angle Limit is used for.  This command changes the CW Angle Limit to the new provided value.  This command modifies the EEPROM, so it includes a 0.25 second sleep to avoid corrupting the firmware.
-
-Sample Code:
-```python
-motor5 = AX_12A(id = 5)
-motor5.connect()
-motor5.setCWAngleLimit(200)
-# This sets the new CW Angle Limit to 200, as we did using the PhantomX Pincher Arm.
-```
-
 #### `setCCWAngleLimit()`
   * Inputs: One integer, the new CCW Angle Limit.
   * Returns: 'None', or an error message if command fails.
