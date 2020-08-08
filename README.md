@@ -43,6 +43,7 @@ Notice that there are both instance methods and class methods. An instance metho
 motor2 = AX_12A(id = 2)
 AX_12A.connectAll()
 motor1.setGoalPosition(512)
-motor2.setGoalPosition(512)```
+motor2.setGoalPosition(512)
+```
 
 Here, `connectAll()` is a class method and `setGoalPosition()` is an instance method.
