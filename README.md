@@ -8,11 +8,11 @@ This provides complete, high-level controls in a python environment for the Dyna
 
 I set up methods for every memory address, read any of them, write any of the writeable ones, all by name.
 
-Notice that I have attached two AX-12A eManuals, both provided by Robotis.  The one labeled AX-12 Bioloid is obsolete -- it is actually for a different motor which predates the AX-12A, but I found it to be easier to use since it is better formatted, and not significantly different from the AX-12A.
+Notice that I have attached two AX-12A eManuals, both provided by Robotis.  The one labeled AX-12 Bioloid is obsolete -- it is actually for a different motor which predates the AX-12A, but I found it to be easier to use since it is better formatted, and not significantly different from the AX-12A.  If you are looking at the eManuals, the idea of the Dynamixel SDK and this module is to provide an interface where you don't have to understand how to assemble the packets, or know what the specific memory addresses are, or any of that.  Together, these provide a high-level object-oriented interface that allows you to not worry about all of those details.
 
 # Documentation
 
-I strongly recommend that you have the [Dynamixel Wizard](http://www.robotis.us/dynamixel-management/) set up on some device, and you have a physical setup with power and data hookups for one or more Dynamixels so that you can use it. For example, if you have a Dynamixel where you don't know both the ID and baud rate, you can reset the Dynamixel firmware, and these will be reset to default values. If you are resetting the firmware, ID and/or baud rate, you should have only one Dynamixel hooked up.
+I strongly recommend that you have the [Dynamixel Wizard](http://www.robotis.us/dynamixel-management/) set up on some device, and you have a physical setup with power and data hookups for one or more Dynamixels so that you can use it. For example, if you have a Dynamixel where you don't know both the ID and baud rate, you can use the Dynamixel Wizard to reset the Dynamixel firmware, and these will be reset to default values. If you are resetting the firmware, ID and/or baud rate, you should have only one Dynamixel hooked up.
 
 This library contains one class: `AX_12A()`, and no functions.
 
