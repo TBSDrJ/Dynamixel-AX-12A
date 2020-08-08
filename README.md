@@ -197,3 +197,40 @@ Sample Codes:
   * See `setPose()` above. In this script, if you leave out all of the `waitForMotors()` commands, the arm wouldn't reach at all and `motor5` would move from 200 to 745 (opening the pincher).  This is because the starting and ending positions are the same for the other four motors, and the new positions would overwrite so fast that the other four motors wouldn't get to execute the reach movement before being asked to go back to rest position.  Putting the `waitForMotors()` in means that the motors would first complete the movement to the new pose before moving on to the next pose.
   * See `readPose()` above. In this script, the `waitForMotors()` causes the script to wait until you stop manipulating the arm before it reads the new pose.  In practice, I found, at times, that I stopped moving the arm before I intended -- the `waitForMotors()` doesn't have any delay built in, so any pause at all in the movement will cause it to end, but then I just had to re-run the script.  
   
+### Most Common Instance Methods
+
+#### `disableTorque()`
+ * Inputs: None
+ * Outputs: None
+ * Description: Turns torque off. This means that the servo will stop holding its position; if an external force is applied, the motor will turn, slowed only by inertia and friction. On an AX-12A, the gear inertia is quite significant if you have no leverage.  `motor.disableTorque()` is a shortcut for `motor.setTorqueEnable(0)`.
+ 
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.disableTorque()
+```
+
+See readPose() in Class Methods, above for why you might want to do this.
+
+Sample Hack:
+In the `readPose()` script, you could re-write the line `AX_12A.setAll('setTorqueEnable', 0)` as `AX_12A.getAll('disableTorque')` because the `getAll()` method will run any instance method that does not have an input value.  It doesn't read well, though, so I wouldn't do it.
+
+#### `enableTorque()`
+ * Inputs: None
+ * Outputs: None
+ * Description: Re-enables torque in a motor where it was disabled temporarily.  All motors have torque enabled as part of their `connect()` sequence, so you should only need this if you manually disabled torque.  `motor.enableTorque()` is a shortcut for `motor.setTorqueEnable(1)`
+ 
+Sample code (see readPose() above for why you might want to do this):
+```python
+from time import sleep
+motor1 = AX_12A(id = 1)
+motor1.connect()
+sleep(3)
+# Relax motor so it can be moved by hand
+motor1.disableTorque()
+# Wait until you are done moving it
+AX_12A.waitForMotors()
+# Hold the new position
+motor1.enableTorque()
+```
