@@ -65,7 +65,8 @@ motor2 = AX_12A(id = 2)
 l = AX_12A.listInstances()
 print(l)
 # output should be something like: [<>,<>]
-# Notice that motor1 is connected and motor2 is not, but both appear in the list, with no indication of which is connected and which is not.
+# Notice that motor1 is connected and motor2 is not, but both appear in the list, 
+# with no indication of which is connected and which is not.
 ```
 
 #### `connectAll()`
