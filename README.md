@@ -202,7 +202,7 @@ Sample Codes:
 #### `disableTorque()`
  * Inputs: None
  * Outputs: None
- * Description: Turns torque off. This means that the servo will stop holding its position; if an external force is applied, the motor will turn, slowed only by inertia and friction. On an AX-12A, the gear inertia is quite significant if you have no leverage.  `motor.disableTorque()` is a shortcut for `motor.setTorqueEnable(0)`.
+ * Description: Turns torque off. This means that the servo will stop holding its position; if an external force is applied, the motor will turn, slowed only by inertia and friction. On an AX-12A, the gear inertia is quite significant if you have no leverage.  `motor.disableTorque()` is a shortcut for `motor.setTorqueEnable(0)`, mostly for readability.
  
 Sample Code:
 ```python
@@ -214,12 +214,13 @@ motor1.disableTorque()
 See readPose() in Class Methods, above for why you might want to do this.
 
 Sample Hack:
+
 In the `readPose()` script, you could re-write the line `AX_12A.setAll('setTorqueEnable', 0)` as `AX_12A.getAll('disableTorque')` because the `getAll()` method will run any instance method that does not have an input value.  It doesn't read well, though, so I wouldn't do it.
 
 #### `enableTorque()`
  * Inputs: None
  * Outputs: None
- * Description: Re-enables torque in a motor where it was disabled temporarily.  All motors have torque enabled as part of their `connect()` sequence, so you should only need this if you manually disabled torque.  `motor.enableTorque()` is a shortcut for `motor.setTorqueEnable(1)`
+ * Description: Re-enables torque in a motor where it was disabled temporarily.  All motors have torque enabled as part of their `connect()` sequence, so you should only need this if you manually disabled torque.  `motor.enableTorque()` is a shortcut for `motor.setTorqueEnable(1)` mostly for readability.
  
 Sample code (see readPose() above for why you might want to do this):
 ```python
