@@ -221,7 +221,12 @@ Sample Codes:
   * [`getCCWAngleLimit()`](#getccwanglelimit)
   * [`setCWAngleLimit()`](#setcwanglelimit)
   * [`setCCWAngleLimit()`](#setccwanglelimit)
+  * [`setGoalPosition()`](#setgoalposition)
   * [`setID()`](#setid)
+  * [`setLED()`](#setled)
+  * [``](#)
+  * [``](#)
+  * [``](#)
   * [``](#)
 
 #### `connect()`
@@ -340,6 +345,25 @@ motor5.setCCWAngleLimit(745)
 # This sets the new CCW Angle Limit to 745, as we did using the PhantomX Pincher Arm.
 ```
 
+#### `setGoalPosition()`
+  * Inputs: One integer, the position that you want the servo to move to, between 0 and 1023.
+  * Returns: `None`, or an error message if command fails.
+  * Description: This (or its shortcut [`setPose()`](#setpose)) is the most important command when using a Dynamixel in Joint Mode.  In Joint Mode, the Dynamixel AX-12A can move within a 300 degree arc.  This arc is divided up into sections of about 0.3°, numbered 0-1023.  This command tells the Dynamixel to move to a new position in that arc.  Make sure you look at [`waitForMotors()`](#waitformotors) to see about waiting for the motor to get to its new position.
+  
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+# Rotate back and forth indefinitely
+while True:
+  # Move as far as possible in CW direction
+  motor1.setGoalPosition(0)
+  AX_12A.waitForMotors()
+  # Move as far as possible in CCW direction
+  motor1.setGoalPosition(1023)
+  AX_12A.waitForMotors()
+```
+
 #### `setID()`
   * Inputs: One integer, the new ID value for the Dynamixel.  This must be between 0 and 253.
   * Returns: `None`, or an error message if command fails.
@@ -353,7 +377,33 @@ motor1.setID(37)
 ```
 This would change the ID in the internal memory from 1 to 37.
 
+#### `setLED()`
+  * Inputs: 0 or 1, to turn LED off or on.
+  * Returns: `None`, or an error message if command fails.
+  * Description: Turns the red LED off or on.
+  
+Sample Code:
+```python
+# The Dynamixel equivalent of the Arduino sample code 'Blink'
+motor1 = AX_12A(id = 1)
+motor1.connect()
+while True:
+  motor1.setLED(1)
+  sleep(1) # imported from time in module
+  motor1.setLED(0)
+  sleep(1)
+```
+
 #### `wheelMode()`
   * Inputs: None
   * Returns: None
   * Description: Sets the Dynamixel to Wheel Mode, where it can't accept a Goal Position, but it can spin freely, using [`setMovingSpeed`](#setmovingspeed). The Dynamixel enters Wheel Mode when both the CW and CCW Angle Limits are set to 0, so this is a shortcut that sets both of those values to 0. This command modifies the EEPROM twice, so it includes two 0.25 second sleeps to avoid corrupting the firmware.
+
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.wheelMode()
+motor1.setMovingSpeed(512)
+# motor1 should now be spinning at 50% power.
+```
