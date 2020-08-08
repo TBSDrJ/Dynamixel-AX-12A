@@ -330,7 +330,7 @@ motor1.connect()
 # Set motor to 50% power
 motor1.setMovingSpeed(512)
 print(motor1.getMovingSpeed()) 
-# Will output 512 even if actual speed is more/less of that.
+# Will output 512 even if actual speed is more/less than that.
 while True:
   print(motor1.getPresentSpeed())
 # Will output values very close to 512 as long as Dynamixel can spin freely.
