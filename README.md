@@ -112,6 +112,7 @@ motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 AX_12A.connectAll()
 errs = AX_12A.setAll('setGoalPosition', 512)
+AX_12A.waitForMotors()
 print(errs)
 # This should center both motors and then output: [ None, None ].
 ```
@@ -161,6 +162,7 @@ AX_12A.connectAll()
 sleep(5)
 # Release all the motors so you can move them manually
 AX_12A.setAll('setTorqueEnable', 0) 
+# Wait until the motors stop moving to read the pose
 AX_12A.waitForMotors()
 pose = AX_12A.readPose()
 print(pose)
@@ -168,3 +170,13 @@ print(pose)
 # I would get output something like: [ 510, 206, 993, 642, 211 ]
 # and then round off to get values in setPose() above.
 ```
+
+#### `waitForMotors()`
+ * Inputs: None
+ * Returns: None
+ * Description: Pauses execution of the script until all of the servos stop moving. This method does not determine *why* the motors are moving, it just pauses the program until they stop moving. It will remain paused even if only one of several motors is still moving. This is important to use with any setGoalPosition (including setPose()). If you use two successive setGoalPosition() commands with the same motor without waiting in between, the first will be wiped out by the second (see sample codes below). 
+
+Sample Codes:
+  * See `setAll()` above. In this script, if you had only this sample code, you wouldn't be able to see the difference whether or not you use waitForMotors(), except that, if you leave it out, the output would appear in the console and the script would end before the motors finished moving (assuming they had some distance to go to get to 512).  This is because, once you send the command to set the new goal position, the motor will continue to move even after the script has ended as long as the motors have power.  However, if you had some other command involving these motors after the end of the sample lines, this command would overwrite the goal position before the motor completed its movement.
+  * See `setPose()` above. In this script, if you leave out all of the waitForMotors() commands, the arm wouldn't reach at all and motor5 would move from 200 to 745 (opening the pincher).  This is because the starting and ending positions are the same for the other four motors, and the new positions would overwrite so fast that the other four motors wouldn't get to execute the reach movement before being asked to go back to rest position.  Putting the waitForMotors() in means that the motors would first complete the movement to the new pose before moving on to the next pose.
+  * See `readPose()` above. In this script, the waitForMotors() causes the script to wait until you stop manipulating the arm before it reads the new pose.  In practice, I found, at times, that I stopped moving the arm before I intended -- the waitForMotors() doesn't have any delay built in, so any pause at all in the movement will cause it to end, but then I just had to re-run the script.  You could re-code this by moving the torque disable above the sleep, then sleep, then read the pose, and remove the waitForMotors() entirely, this would give you the position after 5 seconds regardless of whether you are done moving or not.
