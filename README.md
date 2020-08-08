@@ -118,6 +118,21 @@ print(errs)
 # This should center both motors and then output: [ None, None ].
 ```
 
+This is a shortcut for:
+```python
+motor1 = AX_12A(id = 1)
+motor2 = AX_12A(id = 2)
+motor1.connect()
+motor2.connect()
+errs = []
+errs.append(motor1.setGoalPosition(512))
+errs.append(motor2.setGoalPosition(512))
+AX_12A.waitForMotors()
+print(errs)
+# This should center both motors and then output: [ None, None ].
+```
+
+
 #### `setPose()`
   * Input: List of integers, each a Goal Position for an AX-12A.  You can substitute `None` for any servo you wish to have hold its position.
   * Returns: None
