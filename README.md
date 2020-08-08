@@ -142,3 +142,29 @@ AX_12A.waitForMotors()
 # Retract arm, keeping pincher closed
 AX_12A.setPose((None, 200, 1000, 650)) # Leaves motor1 at 512, and motor5 at 745
 ```
+
+#### `readPose()`
+  * Inputs: None
+  * Returns: A list of integers, the positions of all of the declared motors.
+  * Description: This is intended to simplify figuring out what the positions of the servos need to be to attain a certain position. The idea (see sample code below) would be to turn torque off on all the motors, then manually move the assembly to the desired position, and read the servo positions so that this position can be duplicated without excessive trial-and-error.
+
+Sample Code (I used this with the [PhantomX Pincher Robot Arm](https://www.trossenrobotics.com/p/PhantomX-Pincher-Robot-Arm.aspx), replacing the Arbotix controller with a linux-based microcontroller attached using a [Robotis U2D2](http://www.robotis.us/u2d2/)):
+```python
+from time import sleep
+motor1 = AX_12A(id = 1)
+motor2 = AX_12A(id = 2)
+motor3 = AX_12A(id = 3)
+motor4 = AX_12A(id = 4)
+motor5 = AX_12A(id = 5)
+AX_12A.connectAll()
+# Sleep so that you have time to move your hands from the keyboard to the robotic arm
+sleep(5)
+# Release all the motors so you can move them manually
+AX_12A.setAll('setTorqueEnable', 0) 
+AX_12A.waitForMotors()
+pose = AX_12A.readPose()
+print(pose)
+# If I were figuring out where the rest position was with pincher open, 
+# I would get output something like: [ 510, 206, 993, 642, 211 ]
+# and then round off to get values in setPose() above.
+```
