@@ -225,6 +225,9 @@ class AX_12A:
             return ccwAngleLimitError
 
     def wheelMode(self):
+        # The variable localPrintInfo saves the state of self.printInfo.
+        # If self.printInfo was on, this allows some work to be done silently temporarily,
+        #   and a single message is printed at the end.
         localPrintInfo = self.printInfo
         if localPrintInfo: self.printInfo = False
         self.setCwAngleLimit(0)
@@ -728,6 +731,9 @@ class AX_12A:
         
     @classmethod
     def waitForMotors(cls):
+        # The localPrintInfo list stores the current state of self.printInfo for each motor.
+        # This allows for temporarily silencing the output while checking for moving status.
+        # All self.printInfo values are re-set to their prior values at the end.
         localPrintInfo = []
         motors = AX_12A.listInstances()
         for motor in motors:
@@ -738,6 +744,11 @@ class AX_12A:
             moving = False
             for motor in motors:
                 if motor.getMoving(): moving = True
+        printInfoAny = False
         for index, motor in enumerate(motors):
             motor.printInfo = localPrintInfo[index]
+            if localPrintInfo:
+                printInfoAny = True
+        if printInfoAny:
+            print("[INFO] All motors have stopped moving.")
         return
