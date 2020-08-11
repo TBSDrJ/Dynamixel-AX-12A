@@ -481,14 +481,41 @@ class AX_12A:
 
     def getMovingSpeed(self):
         # NOTE: This is goal speed.  For actual speed, use getPresentSpeed()
+        # This returns an 11-bit value; if greater than 1023, it needs to be moved.
+        # See setMovingSpeed() for more detail.
         movingSpeed, movingSpeedError = self.__dxlGetter(2, self.ADDR_MOVING_SPEED)
+        if movingSpeed >=0 and movingSpeed < 1024: adjMovingSpeed = movingSpeed
+        elif movingSpeed < 2048: adjMovingSpeed = -(movingSpeed - 1024)
+        else: 
+            adjMovingSpeed = None
+            if self.printInfo:
+                print("[ERROR] ID:", self.id, "getMovingSpeed found value out of range:", movingSpeed)
         if movingSpeedError == 0:
-            if self.printInfo: print("[READ] ID:", self.id, "Goal Moving Speed:", movingSpeed)
-            return movingSpeed
+            if self.printInfo: print("[READ] ID:", self.id, "Goal Moving Speed:", adjMovingSpeed)
+            return adjMovingSpeed
         else:
             return None
 
     def setMovingSpeed(self, movingSpeedValue):
+        # The Dynamixel stores speed as follows:
+        # There are 2 bytes/16 bits available.  It uses only 10 or 11 of them.
+        # The first 10 bits provide the absolute value of the speed. 
+        # This 10-bit integer is what is used in Joint Mode, the 11th bit is ignored.
+        # Notice that, in Joint Mode, speed does not determine direction; the 
+        # location of the goal position determines direction.
+        # The 11th bit determines direction in Wheel Mode -- 0=CCW and 1=CW.
+        # So this function is set up thinking of it as an 11-bit signed integer:
+        # The first ten bits are the numerical value, the 11th bit is the sign,
+        # where 0=+/CCW, 1=-/CW.
+        # But to write those values we need to move the input values from -1 to -1023
+        # to values for writing to Dynamixel from 1025 to 2047. So we negate and add to 1024.
+        # Notice eManual is incorrect: 0 & 1024 both mean stop.  The manual says 0 = full power.
+        if movingSpeedValue > 2047 or movingSpeedValue < -1023:
+            errorString = "[Error] ID: " + str(self.id) + " setMovingSpeed should be between -1023 and 1023, received: " + str(movingSpeedValue)
+            if self.printInfo: print(errorString)
+            return errorString
+        if movingSpeedValue < 0: # CW movement in wheel mode
+            pass
         movingSpeedError = self.__dxlSetter(2, self.ADDR_MOVING_SPEED, movingSpeedValue)
         if movingSpeedError == 0:
             if self.printInfo: print("[WRITE] ID:", self.id, "Goal Moving Speed set to", movingSpeedValue)
