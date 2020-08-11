@@ -516,6 +516,8 @@ class AX_12A:
             return errorString
         if movingSpeed < 0: # CW movement in wheel mode
             adjMovingSpeed = 1024 + -movingSpeed
+        else:
+            adjMovingSpeed = movingSpeed
         movingSpeedError = self.__dxlSetter(2, self.ADDR_MOVING_SPEED, adjMovingSpeed)
         if movingSpeedError == 0:
             if self.printInfo: print("[WRITE] ID:", self.id, "Goal Moving Speed set to", movingSpeed)
@@ -681,7 +683,7 @@ class AX_12A:
             # If in Joint mode, check if Present Position is out of range. 
             # If so, move to end of range.
             if self.connected:
-                if self.getCwAngleLimit != 0 or self.getCcwAngleLimit != 0:
+                if self.getCwAngleLimit() != 0 or self.getCcwAngleLimit() != 0:
                     if self.getCwAngleLimit() > self.getPresentPosition():
                         if self.printInfo: print("[INFO] ID:", self.id, "Motor out of range. Move motor to minimum position.")
                         self.setGoalPosition(self.getCwAngleLimit())
