@@ -206,14 +206,13 @@ print(pose)
 #### `waitForMotors()`
  * Inputs: None
  * Returns: None
- * Description: Pauses execution of the script until all of the servos stop moving towards a Goal Position. It will remain paused even if only one of several motors is still moving. This is important to use with any [`setGoalPosition()`](#setgoalposition) (including [`setPose()`](#setpose)). If you use two successive [`setGoalPosition()`](#segoalposition) commands with the same motor without waiting in between, the first will be wiped out by the second (see sample codes below).
-Notice that this command does *not* work if the motor is moving for any other reason, for example, if you are in Wheel Mode, or if you turn torque off and rotate the motor by hand, these will not be detected.  I will fix this shortly.
+ * Description: Pauses execution of the script until all of the servos stop moving, for any reason. It will remain paused even if only one of several motors is still moving. This is important to use with any [`setGoalPosition()`](#setgoalposition) (including [`setPose()`](#setpose)). If you use two successive [`setGoalPosition()`](#segoalposition) commands with the same motor without waiting in between, the first will be wiped out by the second (see sample codes below).
 
 Sample Codes:
   * See [`setAll()`](#setall) above. In this script, if you had only this sample code, you wouldn't be able to see the difference whether or not you use [`waitForMotors()`](#waitformotors), except that, if you leave it out, the output would appear in the console and the script would end before the motors finished moving (assuming they had some distance to go to get to center).  This is because, once you send the command to set the new goal position, the motor will continue to move even after the script has ended as long as the motors have power.  However, if you had some other command involving these motors after the end of the sample lines, this command would overwrite the goal position before the motor completed its movement.
   * See [`setPose()`](#setpose) above. In this script, if you leave out all of the [`waitForMotors()`](#waitformotors) commands, the arm wouldn't reach at all and `motor5` would move from 200 to 745 (opening the pincher).  This is because the starting and ending positions are the same for the other four motors, and the new positions would overwrite so fast that the other four motors wouldn't get to execute the reach movement before being asked to go back to rest position.  Putting the [`waitForMotors()`](#waitformotors) in means that the motors would first complete the movement to the new pose before moving on to the next pose.
-  * See [`readPose()`](#readpose) above. In this script, the [`waitForMotors()`](#waitformotors) causes the script to wait until you stop manipulating the arm before it reads the new pose.  In practice, I found, at times, that I stopped moving the arm before I intended -- the [`waitForMotors()`](#waitformotors) doesn't have any delay built in, so any pause at all in the movement will cause it to end, but then I just had to re-run the script.
-  
+  * See [`readPose()`](#readpose) above. In this script, the [`waitForMotors()`](#waitformotors) causes the script to wait until you stop manipulating the arm before it reads the new pose.
+
 ### Most Common Instance Methods
 
   * [`connect()`](#connect)

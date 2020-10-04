@@ -641,6 +641,10 @@ class AX_12A:
     def getMoving(self):
         moving, movingError = self.__dxlGetter(1, self.ADDR_MOVING)
         if movingError == 0:
+            # moving=1 only indicates that a setGoalPosition has not completed yet
+            # so we also check if actual speed is zero as well.
+            if moving == 0:
+                if self.getPresentSpeed() != 0: moving = 1
             if self.printInfo: print("[READ] ID:", self.id, "Moving:", moving)
             return moving
         else:
