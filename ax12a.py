@@ -202,7 +202,8 @@ class AX_12A:
 
     def setCwAngleLimit(self, cwAngleLimitValue):
         # CW Angle Limit has to be less than CCW Angle Limit
-        if cwAngleLimitValue < self.ccwAngleLimit:
+        # Need equals to be able to enter Wheel Mode
+        if cwAngleLimitValue <= self.ccwAngleLimit:
             cwAngleLimitError = self.__dxlSetter(2, self.ADDR_CW_ANGLE_LIMIT, cwAngleLimitValue)
             if cwAngleLimitError == 0:
                 if self.printInfo: print("[WRITE] ID:", self.id, "CW Angle Limit set to", cwAngleLimitValue)
@@ -226,7 +227,8 @@ class AX_12A:
 
     def setCcwAngleLimit(self, ccwAngleLimitValue):
         # CCW Angle Limit has to be greater than CW Angle Limit
-        if ccwAngleLimitValue > self.cwAngleLimit:
+        # Need equals to be able to enter Wheel Mode
+        if ccwAngleLimitValue >= self.cwAngleLimit:
             ccwAngleLimitError = self.__dxlSetter(2, self.ADDR_CCW_ANGLE_LIMIT, ccwAngleLimitValue)
             if ccwAngleLimitError == 0:
                 if self.printInfo: print("[WRITE] ID:", self.id, "CCW Angle Limit set to", ccwAngleLimitValue)
