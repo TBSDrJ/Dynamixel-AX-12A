@@ -417,29 +417,50 @@ while True:
 
 #### `getPresentLoad()`
   * Inputs: None
-  * Returns: 
-  * Description:
-  
+  * Returns: An integer, -1023 to 1023, showing the torque that the motor is exerting right now.
+  * Description: Negative values mean that the load is pushing in the CCW direction, positive values mean that the load is pushing in the CW direction.  The documentation warns that the Dynamixel does *not* have a torque sensor, the value is just inferred internally; it does not indicate what method is used to make that inference, I would assume it is based on the wattage drawn by the internal DC motor.
+
 Sample Code:
 ```python
+from ax12a import AX_12A
+from time import sleep
+
+motor1 = AX_12A(id = 1)
+motor1.connect()
+while True:
+    sleep(0.1)
+    motor1.getPresentLoad()
+# Should be 0 if you don't apply any force.
 ```
 
 #### `getPresentVoltage()`
   * Inputs: None
-  * Returns: 
-  * Description:
+  * Returns: An integer 60 - 140, equal to 10x the incoming voltage.
+  * Description: Voltages under 6.0V are not enough to allow the motor to boot up, so it will not connect if the voltage is too low.  I assume the same is true for voltages over 14.0 V, but I did not try this since I didn't want to damage the motor if there wasn't enough protection from overvoltage.
   
 Sample Code:
 ```python
+from ax12a import AX_12A
+
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.getPresentVoltage()
+# I got 123 from my Dynamixel, powered by an SMPS 12V 5A Adapter from Robotis (using a U2D2 and U2D2 Power Hub Board, now sold as a package called the Dynamixel Starter Set).  I tried it again with a 5V 4A power supply for an Nvidia Jetson Nano (with the same barrel jack connector), and the Dynamixel did not connect.
 ```
 
 #### `getPresentTemperature()`
   * Inputs: None
-  * Returns: 
-  * Description:
-  
+  * Returns: An integer, equal to temperature in degrees Celsius.
+  * Description: Returns the internal temperature, in degrees Celsius, rounded to the nearest whole number.  If this reaches the temperature limit value set in the EEPROM (default 70), the motor will stop working until it cools down.  In practice, when I've gotten an overtemperature error, I often found that simply power cycling the motor was sufficient to get it going again, but this risks damage to the motor.
+
 Sample Code:
 ```python
+from ax12a import AX_12A
+
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.getPresentTemperature()
+# At room temperature, before use, should return 27-30 or so, a little warmer than the room.
 ```
 
 #### `getMoving()`

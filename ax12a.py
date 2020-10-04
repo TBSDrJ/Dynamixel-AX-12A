@@ -564,6 +564,8 @@ class AX_12A:
     def getPresentLoad(self):
         presentLoad, presentLoadError = self.__dxlGetter(2, self.ADDR_PRESENT_LOAD)
         if presentLoadError == 0:
+            if presentLoad > 1023:
+                presentLoad = -(presentLoad - 1024)
             if self.printInfo: print("[READ] ID:", self.id, "Present Load:", presentLoad)
             return presentLoad
         else:
