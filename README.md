@@ -205,7 +205,8 @@ print(pose)
 #### `waitForMotors()`
  * Inputs: None
  * Returns: None
- * Description: Pauses execution of the script until all of the servos stop moving. This method does not determine *why* the motors are moving, it just pauses the program until they stop moving. It will remain paused even if only one of several motors is still moving. This is important to use with any [`setGoalPosition()`](#setgoalposition) (including [`setPose()`](#setpose)). If you use two successive [`setGoalPosition()`](#segoalposition) commands with the same motor without waiting in between, the first will be wiped out by the second (see sample codes below). 
+ * Description: Pauses execution of the script until all of the servos stop moving towards a Goal Position. It will remain paused even if only one of several motors is still moving. This is important to use with any [`setGoalPosition()`](#setgoalposition) (including [`setPose()`](#setpose)). If you use two successive [`setGoalPosition()`](#segoalposition) commands with the same motor without waiting in between, the first will be wiped out by the second (see sample codes below).
+Notice that this command does *not* work if the motor is moving for any other reason, for example, if you are in Wheel Mode, or if you turn torque off and rotate the motor by hand, these will not be detected.  I will fix this shortly.
 
 Sample Codes:
   * See [`setAll()`](#setall) above. In this script, if you had only this sample code, you wouldn't be able to see the difference whether or not you use [`waitForMotors()`](#waitformotors), except that, if you leave it out, the output would appear in the console and the script would end before the motors finished moving (assuming they had some distance to go to get to center).  This is because, once you send the command to set the new goal position, the motor will continue to move even after the script has ended as long as the motors have power.  However, if you had some other command involving these motors after the end of the sample lines, this command would overwrite the goal position before the motor completed its movement.
@@ -465,11 +466,21 @@ motor1.getPresentTemperature()
 
 #### `getMoving()`
   * Inputs: None
-  * Returns: 
-  * Description:
-  
+  * Returns: 0 or 1.
+  * Description: 0 means 'not moving' and 1 means 'moving.' This *only* works if the Dynamixel is in Joint Mode, and is executing a [`setGoalPosition()`](#setgoalposition) command.  So, if the motor is in Wheel Mode, or if torque is off and the motor is moving because of an external force, then this method will return 0 even when the motor is moving.  In these cases, you can use [`getPresentSpeed()`](#getpresentspeed) instead.  I will fix this shortly.
+
 Sample Code:
 ```python
+from ax12a import AX_12A
+
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.setGoalPosition(0)
+while motor1.getMoving():
+    pass
+motor1.setGoalPosition(1023)
+while motor1.getMoving():
+    pass
 ```
 
 #### `setCWAngleLimit()`
