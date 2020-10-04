@@ -241,23 +241,7 @@ Sample Codes:
  * Inputs: None
  * Outputs: None
  * Description: Checks the connection to the motor and turns torque on; if `connect()` runs without error, then you know the motor is ready to use.  `connect()` does all of the following:
-   * Checks if the motor has already been confrom ax12a import AX_12A
-from time import sleep
-
-motor1 = AX_12A(id = 1)
-motor1.connect()
-motor1.setCwAngleLimit(200)
-motor1.setCcwAngleLimit(745)
-# Move most of the way towards CW angle limit
-motor1.setGoalPosition(256)
-AX_12A.waitForMotors()
-# Now, spin freely for a few seconds then stop
-motor1.wheelMode()
-motor1.setMovingSpeed(512)
-sleep(5)
-motor1.setMovingSpeed(0)
-# Go back to joint mode, it will use limits of 200 & 745
-motor1.jointMode()nected, using the `.connected` attribute.
+   * Checks if the motor has already been connected, using the `.connected` attribute.
    * Initializes the port and packet handlers set up by the Dynamixel SDK.
    * Sets the baud rate for communication to the motor.
    * Attempts a sample write, which enables Torque
