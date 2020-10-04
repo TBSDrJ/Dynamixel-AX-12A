@@ -589,7 +589,7 @@ motor1.getPresentTemperature()
 #### `getMoving()`
   * Inputs: None
   * Returns: 0 or 1.
-  * Description: 0 means 'not moving' and 1 means 'moving.' This *only* works if the Dynamixel is in Joint Mode, and is executing a [`setGoalPosition()`](#setgoalposition) command.  So, if the motor is in Wheel Mode, or if torque is off and the motor is moving because of an external force, then this method will return 0 even when the motor is moving.  In these cases, you can use [`getPresentSpeed()`](#getpresentspeed) instead.  I will fix this shortly.
+  * Description: 0 means 'not moving' and 1 means 'moving.' Notice that this does a little more than just read the 'Moving' memory address, it also checks Present Speed.  The reason for this is that the Moving memory address only checks if a Set Goal Position has not completed, it doesn't detect if wheel mode has set a velocity, nor does it detect if an outside force is moving the motor, but these show up in Present Speed.
 
 Sample Code:
 ```python
