@@ -48,6 +48,8 @@ The class itself has one attribute:
 Notice that there are both instance methods and class methods. An instance method applies to a single instance of the `AX_12A` class; a class method applies to the entire class (and uses the `instances` attribute to apply to each instance).  For example:
 
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 AX_12A.connectAll()
@@ -76,6 +78,8 @@ Here, `connectAll()` is a class method and `setGoalPosition()` is an instance me
 Sample code:
 
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 motor2 = AX_12A(id = 2)
@@ -94,6 +98,8 @@ print(l)
 Sample code:
 
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 AX_12A.connectAll()
@@ -108,6 +114,8 @@ AX_12A.connectAll()
 Sample Code:
 
 ```python
+from ax12a import AX_12A
+
 motor1.AX_12A(id = 1)
 motor2.AX_12A(id = 2)
 AX_12A.connectAll()
@@ -126,6 +134,8 @@ print(positions)
   
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 AX_12A.connectAll()
@@ -137,6 +147,8 @@ print(errs)
 
 This is a shortcut for:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 motor1.connect()
@@ -158,6 +170,8 @@ print(errs)
 Sample Code (I used this with the [PhantomX Pincher Robot Arm](https://www.trossenrobotics.com/p/PhantomX-Pincher-Robot-Arm.aspx), replacing the Arbotix controller with a linux-based microcontroller attached using a [Robotis U2D2](http://www.robotis.us/u2d2/)):
 
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 motor3 = AX_12A(id = 3)
@@ -184,6 +198,9 @@ AX_12A.setPose((None, 200, 1000, 650)) # Leaves motor1 at 512, and motor5 at 745
 
 Sample Code (I used this with the [PhantomX Pincher Robot Arm](https://www.trossenrobotics.com/p/PhantomX-Pincher-Robot-Arm.aspx), replacing the Arbotix controller with a linux-based microcontroller attached using a [Robotis U2D2](http://www.robotis.us/u2d2/)):
 ```python
+from ax12a import AX_12A
+from time import sleep
+
 motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 motor3 = AX_12A(id = 3)
@@ -253,6 +270,8 @@ See also the class method `connectAll()`.
    
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 ```
@@ -301,6 +320,8 @@ motor1.jointMode()
 
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 # Rotate back and forth indefinitely
@@ -320,6 +341,8 @@ while True:
 
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 motor1.wheelMode()
@@ -336,6 +359,8 @@ In Joint Mode, it sets the speed that the motor moves when it changes to its new
 
 Sample Code 1 (basic goForward with two motors):
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor2 = AX_12A(id = 2)
 AX_12A.connectAll()
@@ -355,6 +380,8 @@ See Sample Code 2 in [`getMovingSpeed()`](#getmovingspeed), below.
  
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 motor1.disableTorque()
@@ -373,6 +400,9 @@ In the `readPose()` script, you could re-write the line `AX_12A.setAll('setTorqu
  
 Sample code (see readPose() above for why you might want to do this):
 ```python
+from ax12a import AX_12A
+from time import sleep
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 sleep(3) # imported from time in module
@@ -393,6 +423,8 @@ For example, in the [PhantomX Pincher Arm](https://www.trossenrobotics.com/p/Pha
 
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 cwLimit = motor1.getCWAngleLimit()
@@ -409,6 +441,8 @@ In the [PhantomX Pincher Arm](https://www.trossenrobotics.com/p/PhantomX-Pincher
 
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 ccwLimit = motor1.getCCWAngleLimit()
@@ -423,6 +457,8 @@ print(ccwLimit)
 
 Sample Code 1:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 # Set motor to 50% power
@@ -436,6 +472,9 @@ while True:
   
 Sample Code 2 (assuming a robot with two powered wheels):
 ```python
+from ax12a import AX_12A
+from time import sleep
+
 def goForward(speed):
   # Input speed as a percentage, convert to 0 - 1023
   speed = int(speed * 1023 / 100) 
@@ -468,6 +507,8 @@ while True:
   
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 pos = motor1.getPresentPosition()
@@ -571,6 +612,8 @@ while motor1.getMoving():
 
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor5 = AX_12A(id = 5)
 motor5.connect()
 motor5.setCWAngleLimit(200)
@@ -585,6 +628,8 @@ motor5.setCWAngleLimit(200)
 
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor5 = AX_12A(id = 5)
 motor5.connect()
 motor5.setCCWAngleLimit(745)
@@ -598,6 +643,8 @@ motor5.setCCWAngleLimit(745)
 
 Sample Code:
 ```python
+from ax12a import AX_12A
+
 motor1 = AX_12A(id = 1)
 motor1.connect()
 motor1.setID(37)
@@ -611,6 +658,9 @@ This would change the ID in the internal memory from 1 to 37.
   
 Sample Code:
 ```python
+from ax12a import AX_12A
+from time import sleep
+
 # The Dynamixel equivalent of the Arduino sample code 'Blink'
 motor1 = AX_12A(id = 1)
 motor1.connect()
