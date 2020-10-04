@@ -24,6 +24,8 @@ class AX_12A:
         self.devicePort             = devicePort 
         self.printInfo              = printInfo
         self.connected              = False
+        self.cwAngleLimit           = None
+        self.ccwAngleLimit          = None
 
         # Keep a list of all instances of this class for making poses
         self.__class__.instances.append(self)
@@ -639,6 +641,7 @@ class AX_12A:
 
     def connect(self):
         if not self.connected:
+            # Set connected to True, reset back to False if an error occurs.
             self.connected = True
 
             # Initialize PortHandler instance, Set the port path
@@ -688,13 +691,15 @@ class AX_12A:
             # If in Joint mode, check if Present Position is out of range. 
             # If so, move to end of range.
             if self.connected:
-                if self.getCwAngleLimit() != 0 or self.getCcwAngleLimit() != 0:
-                    if self.getCwAngleLimit() > self.getPresentPosition():
+                self.cwAngleLimit = self.getCwAngleLimit()
+                self.ccwAngleLimit = self.getCcwAngleLimit()
+                if self.cwAngleLimit != 0 or self.ccwAngleLimit != 0:
+                    if self.cwAngleLimit > presentPosition:
                         if self.printInfo: print("[INFO] ID:", self.id, "Motor out of range. Move motor to minimum position.")
-                        self.setGoalPosition(self.getCwAngleLimit())
-                    elif self.getCcwAngleLimit() < self.getPresentPosition():
+                        self.setGoalPosition(self.cwAngleLimit)
+                    elif self.ccwAngleLimit < self.getPresentPosition():
                         if self.printInfo: print("[INFO] ID:", self.id, "Motor out of range. Move motor to maximum position.")
-                        self.setGoalPosition(self.getCcwAngleLimit())
+                        self.setGoalPosition(self.ccwAngleLimit)
         else:
             if self.printInfo: print("[INFO] ID:", self.id, "connect() called when motor already connected.")
             return
