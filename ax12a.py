@@ -24,6 +24,8 @@ class AX_12A:
         self.devicePort             = devicePort 
         self.printInfo              = printInfo
         self.connected              = False
+        # These will agree with values stored in Dynamixel memory typically
+        # Except in Wheel Mode, when they will store prior value for returning to Joint Mode.
         self.cwAngleLimit           = None
         self.ccwAngleLimit          = None
 
@@ -248,13 +250,30 @@ class AX_12A:
         #   and a single message is printed at the end.
         localPrintInfo = self.printInfo
         if localPrintInfo: self.printInfo = False
+        # Also remember Angle Limits so we can re-set them if we go back to Joint Mode.
+        tmpCwAngleLimit = self.cwAngleLimit
+        tmpCcwAngleLimit = self.ccwAngleLimit
         self.setCwAngleLimit(0)
-        sleep(0.25)
         self.setCcwAngleLimit(0)
-        sleep(0.25)
+        # Both will have been set to zero, save the values that were there.
+        self.cwAngleLimit = tmpCwAngleLimit
+        self.ccwAngleLimit = tmpCcwAngleLimit
         if localPrintInfo:
             print("[INFO] ID:", self.id, "set to wheel mode.")
             self.printInfo = True
+
+    def jointMode(self):
+        # Check if stored values make sense.  If so, use them.
+        if self.cwAngleLimit >= 0 and self.cwAngleLimit < 1023:
+            if self.ccwAngleLimit > 0 and self.ccwAngleLimit <=1023:
+                if self.cwAngleLimit < self.ccwAngleLimit:
+                    if self.printInfo: print("[INFO] ID:", self.id, "set to joint mode.")
+                    self.setCwAngleLimit(self.cwAngleLimit)
+                    self.setCcwAngleLimit(self.ccwAngleLimit)
+                    return
+        # If they don't make sense for any reason, set to defaults.
+        self.setCwAngleLimit(0)
+        self.setCcwAngleLimit(1023)
 
     def getTemperatureLimit(self):
         temperatureLimit, temperatureLimitError = self.__dxlGetter(1, self.ADDR_TEMPERATURE_LIMIT)
