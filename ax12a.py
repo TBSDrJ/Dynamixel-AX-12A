@@ -551,8 +551,11 @@ class AX_12A:
 
     def getPresentSpeed(self):
         # NOTE: This is actual speed, for goal speed, use getMovingSpeed()
+        # Need to adjust for 11th bit (see setMovingSpeed()).
         presentSpeed, presentSpeedError = self.__dxlGetter(2, self.ADDR_PRESENT_SPEED)
         if presentSpeedError == 0:
+            if presentSpeed > 1023:
+                presentSpeed = -(presentSpeed - 1024)
             if self.printInfo: print("[READ] ID:", self.id, "Present Speed:", presentSpeed)
             return presentSpeed
         else:
