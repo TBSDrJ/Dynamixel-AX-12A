@@ -201,13 +201,20 @@ class AX_12A:
             return None
 
     def setCwAngleLimit(self, cwAngleLimitValue):
-        cwAngleLimitError = self.__dxlSetter(2, self.ADDR_CW_ANGLE_LIMIT, cwAngleLimitValue)
-        if cwAngleLimitError == 0:
-            if self.printInfo: print("[WRITE] ID:", self.id, "CW Angle Limit set to", cwAngleLimitValue)
-            sleep(0.25)
-            return None
+        # CW Angle Limit has to be less than CCW Angle Limit
+        if cwAngleLimitValue < self.ccwAngleLimit:
+            cwAngleLimitError = self.__dxlSetter(2, self.ADDR_CW_ANGLE_LIMIT, cwAngleLimitValue)
+            if cwAngleLimitError == 0:
+                if self.printInfo: print("[WRITE] ID:", self.id, "CW Angle Limit set to", cwAngleLimitValue)
+                self.cwAngleLimit = cwAngleLimitValue
+                sleep(0.25)
+                return None
+            else:
+                return cwAngleLimitError
         else:
-            return cwAngleLimitError
+            errorString = "[ERROR] ID: " + str(self.id) + " Cannot set CW Angle Limit to be greater than CCW Angle Limit."
+            if self.printInfo: print(errorString)
+            return errorString
 
     def getCcwAngleLimit(self):
         ccwAngleLimit, ccwAngleLimitError = self.__dxlGetter(2, self.ADDR_CCW_ANGLE_LIMIT)
@@ -218,13 +225,20 @@ class AX_12A:
             return None
 
     def setCcwAngleLimit(self, ccwAngleLimitValue):
-        ccwAngleLimitError = self.__dxlSetter(2, self.ADDR_CCW_ANGLE_LIMIT, ccwAngleLimitValue)
-        if ccwAngleLimitError == 0:
-            if self.printInfo: print("[WRITE] ID:", self.id, "CCW Angle Limit set to", ccwAngleLimitValue)
-            sleep(0.25)
-            return None
+        # CCW Angle Limit has to be greater than CW Angle Limit
+        if ccwAngleLimitValue > self.cwAngleLimit:
+            ccwAngleLimitError = self.__dxlSetter(2, self.ADDR_CCW_ANGLE_LIMIT, ccwAngleLimitValue)
+            if ccwAngleLimitError == 0:
+                if self.printInfo: print("[WRITE] ID:", self.id, "CCW Angle Limit set to", ccwAngleLimitValue)
+                self.ccwAngleLimit = ccwAngleLimitValue
+                sleep(0.25)
+                return None
+            else:
+                return ccwAngleLimitError
         else:
-            return ccwAngleLimitError
+            errorString = "[ERROR] ID: " + str(self.id) + " Cannot CCW Angle Limit to be less than CW Angle Limit."
+            if self.printInfo: print(errorString)
+            return errorString
 
     def wheelMode(self):
         # The variable localPrintInfo saves the state of self.printInfo.
@@ -474,12 +488,18 @@ class AX_12A:
             return None
 
     def setGoalPosition(self, goalPositionValue):
-        goalPositionError = self.__dxlSetter(2, self.ADDR_GOAL_POSITION, goalPositionValue)
-        if goalPositionError == 0:
-            if self.printInfo: print("[WRITE] ID:", self.id, "Goal Position set to", goalPositionValue)
-            return None
+        # New goal position has to be between the angle limits.
+        if goalPositionValue < self.ccwAngleLimit and goalPositionValue > self.cwAngleLimit:
+            goalPositionError = self.__dxlSetter(2, self.ADDR_GOAL_POSITION, goalPositionValue)
+            if goalPositionError == 0:
+                if self.printInfo: print("[WRITE] ID:", self.id, "Goal Position set to", goalPositionValue)
+                return None
+            else:
+                return goalPositionError
         else:
-            return goalPositionError
+            errorString = "[ERROR] ID: " + str(self.id) + " Cannot set Goal Position " + str(goalPositionValue) + ". It is outside of Angle Limit " + str(self.cwAngleLimit) + " to " + str(self.ccwAngleLimit)
+            if self.printInfo: print(errorString)
+            return errorString
 
     def getMovingSpeed(self):
         # NOTE: This is goal speed.  For actual speed, use getPresentSpeed()

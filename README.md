@@ -37,6 +37,7 @@ Setting up a new instance of the class takes zero to four keyword arguments:
 
 Each of the keyword arguments, above, is also an attribute for each instance.  In addition:
 * `connected`: default = `False`. Set to `True` after the Dynamixel is connected (see `connect()` method below).
+* Both cwAngleLimit and ccwAngleLimit are checked at startup and saved as attributes to facilitate input validation for goal position and setting new angle limits.
 * Each memory address is also a constant attribute in the form `ADDR_XXX` (e.g. `ADDR_ID` or `ADDR_GOAL_POSITION)`.  I followed Leon's names as he set them up in the Dynamixel SDK, which occasionally differ slightly from the eManuals.  The complete list can be seen in the source code.
 
 The class itself has one attribute:
