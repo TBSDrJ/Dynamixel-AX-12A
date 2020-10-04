@@ -364,7 +364,19 @@ while True:
   if motor1.getMovingSpeed() - 50 > motor1.getPresentSpeed(): # If wheel on motor1 is stuck
     stop()
   if motor2.getMovingSpeed() - 50 > motor2.getPresentSpeed(): # If wheel on motor2 is stuck
-    stop()
+    stop()from ax12a import AX_12A
+from time import sleep
+
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.wheelMode()
+motor1.getPresentPosition()
+motor1.setMovingSpeed(-200)
+motor1.getMovingSpeed()
+while True:
+    sleep(0.5)
+    motor1.getPresentSpeed()
+
 ```
 
 #### `getPresentPosition()`
@@ -384,7 +396,7 @@ print(pos)
 #### `getPresentSpeed()`
   * Inputs: None
   * Returns: An integer -1023-1023, showing the *actual* speed of the Dynamixel (but, see below).
-  * Description: This function will return the actual present speed of the Dynamixel, as read from the built-in motor encoder.  As usual, +=CCW, -=CW.  In practice, I have found two things: 1) The value returned is not very close to the value set by [`setMovingSpeed()`](#setMovingSpeed()): for example, when I set moving speed to 200 (in either direction), the present speed returned ranged from 88 to 100; when I set moving speed to 1023, the present speed returned ranged from 612 to 648 or so.  This was consistent across multiple motors.  2) If the motor is in the 60 degree range where Joint Mode is not active, then the value returned is highly unpredictable; most typically, I found values between -2500 and -3000, but also some values (typically negative, regardless of direction of travel) that were in the -1023 to 1023 range.  If the motor is only in this 60 degree range for part of the time sampled by the motor encoders, the value could be closer to the typical values returned, but still off (e.g. 64 when most values are 88-100, or 524 when most values are 612-648).
+  * Description: This function will return the actual present speed of the Dynamixel, as read from the built-in motor encoder.  As usual, +=CCW, -=CW.  In practice, I have found two things: 1) The value returned is not very close to the value set by [`setMovingSpeed()`](#setmovingspeed): for example, when I set moving speed to 200 (in either direction), the present speed returned ranged from 88 to 100; when I set moving speed to 1023, the present speed returned ranged from 612 to 648 or so.  This was consistent across multiple motors.  2) If the motor is in the 60 degree range where Joint Mode is not active, then the value returned is highly unpredictable; most typically, I found values between -2500 and -3000, but also some values (typically negative, regardless of direction of travel) that were in the -1023 to 1023 range.  If the motor is only in this 60 degree range for part of the time sampled by the motor encoders, the value could be closer to the typical values returned, but still off (e.g. 64 when most values are 88-100, or 524 when most values are 612-648).
   
 Sample Code:
 ```python
@@ -400,6 +412,7 @@ motor1.getMovingSpeed()
 while True:
     sleep(0.5)
     motor1.getPresentSpeed()
+# I got -100 and -96 as the first two returned values when I ran this.
 ```
 
 #### `getPresentLoad()`
