@@ -217,12 +217,14 @@ Sample Codes:
 ### Most Common Instance Methods
 
   * [`connect()`](#connect)
+  * [`jointMode()`](#jointmode)
+  * [`setGoalPosition()`](#setgoalposition)
+  * [`wheelMode()`](#wheelmode)
+  * [`setMovingSpeed()`](#setmovingspeed)
   * [`disableTorque()`](#disabletorque)
   * [`enableTorque()`](#enableTorque)
   * [`getCWAngleLimit()`](#getcwanglelimit)
   * [`getCCWAngleLimit()`](#getccwanglelimit)
-  * [`wheelMode()`](#wheelmode)
-  * [`jointMode()`](#jointmode)
   * [`getMovingSpeed()`](#getmovingspeed)
   * [`getPresentPosition()`](#getpresentposition)
   * [`getPresentSpeed()`](#getpresentspeed)
@@ -232,16 +234,30 @@ Sample Codes:
   * [`getMoving()`](#getmoving)
   * [`setCWAngleLimit()`](#setcwanglelimit)
   * [`setCCWAngleLimit()`](#setccwanglelimit)
-  * [`setGoalPosition()`](#setgoalposition)
   * [`setID()`](#setid)
   * [`setLED()`](#setled)
-  * [`setMovingSpeed()`](#setmovingspeed)
 
 #### `connect()`
  * Inputs: None
  * Outputs: None
  * Description: Checks the connection to the motor and turns torque on; if `connect()` runs without error, then you know the motor is ready to use.  `connect()` does all of the following:
-   * Checks if the motor has already been connected, using the `.connected` attribute.
+   * Checks if the motor has already been confrom ax12a import AX_12A
+from time import sleep
+
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.setCwAngleLimit(200)
+motor1.setCcwAngleLimit(745)
+# Move most of the way towards CW angle limit
+motor1.setGoalPosition(256)
+AX_12A.waitForMotors()
+# Now, spin freely for a few seconds then stop
+motor1.wheelMode()
+motor1.setMovingSpeed(512)
+sleep(5)
+motor1.setMovingSpeed(0)
+# Go back to joint mode, it will use limits of 200 & 745
+motor1.jointMode()nected, using the `.connected` attribute.
    * Initializes the port and packet handlers set up by the Dynamixel SDK.
    * Sets the baud rate for communication to the motor.
    * Attempts a sample write, which enables Torque
@@ -257,6 +273,97 @@ Sample Code:
 motor1 = AX_12A(id = 1)
 motor1.connect()
 ```
+
+#### `jointMode()`
+  * Inputs: None
+  * Returns: 'None', or an error message if command fails.
+  * Description: Changes the Dynamixel to position control. It will reset the angle limits to whatever they were before the Dynamixel was set to wheel mode, or the default if prior values are not available.
+
+Sample Code:
+```python
+from ax12a import AX_12A
+
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.jointMode()
+motor1.setGoalPosition(512)
+AX_12A.waitForMotors()
+```
+
+Sample Code 2:
+```python
+from ax12a import AX_12A
+from time import sleep
+
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.setCwAngleLimit(200)
+motor1.setCcwAngleLimit(745)
+# Move most of the way towards CW angle limit
+motor1.setGoalPosition(256)
+AX_12A.waitForMotors()
+# Now, spin freely for a few seconds then stop
+motor1.wheelMode()
+motor1.setMovingSpeed(512)
+sleep(5)
+motor1.setMovingSpeed(0)
+# Go back to joint mode, it will use limits of 200 & 745
+motor1.jointMode()
+```
+
+#### `setGoalPosition()`
+  * Inputs: One integer, the position that you want the servo to move to, between 0 and 1023.
+  * Returns: `None`, or an error message if command fails.
+  * Description: This (or its shortcut [`setPose()`](#setpose)) is the most important command when using a Dynamixel in Joint Mode.  In Joint Mode, the Dynamixel AX-12A can move within a 300 degree arc.  This arc is divided up into sections of about 0.3°, numbered 0-1023.  This command tells the Dynamixel to move to a new position in that arc.  Make sure you look at [`waitForMotors()`](#waitformotors) to see about waiting for the motor to get to its new position.
+
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+# Rotate back and forth indefinitely
+while True:
+  # Move as far as possible in CW direction
+  motor1.setGoalPosition(0)
+  AX_12A.waitForMotors()
+  # Move as far as possible in CCW direction
+  motor1.setGoalPosition(1023)
+  AX_12A.waitForMotors()
+```
+
+#### `wheelMode()`
+  * Inputs: None
+  * Returns: None
+  * Description: Sets the Dynamixel to Wheel Mode, where it can't accept a Goal Position, but it can spin freely, using [`setMovingSpeed`](#setmovingspeed). The Dynamixel enters Wheel Mode when both the CW and CCW Angle Limits are set to 0, so this is a shortcut that sets both of those values to 0. This command modifies the EEPROM twice, so it includes two 0.25 second sleeps to avoid corrupting the firmware.
+
+Sample Code:
+```python
+motor1 = AX_12A(id = 1)
+motor1.connect()
+motor1.wheelMode()
+motor1.setMovingSpeed(512)
+# motor1 should now be spinning at 50% power.
+```
+
+#### `setMovingSpeed()`
+  * Inputs: An integer, -1023 to 1023 (in wheel mode) or 0 to 1023 (in joint mode)
+  * Returns: `None`, or an error message if command fails.
+  * Description: This is the most important command when using a Dynamixel in Wheel Mode.  Sets the Dynamixel to move at the speed set by the input value, where positive values are in the CCW direction and negative values are CW.
+
+In Joint Mode, it sets the speed that the motor moves when it changes to its new Goal Position.  Note that, in general (up to a point), if you run the Dynamixel at lower speed, the torque should increase, so if your robot is having a hard time reaching a certain position because the load is too high, set the moving speed lower and try again.
+
+Sample Code 1 (basic goForward with two motors):
+```python
+motor1 = AX_12A(id = 1)
+motor2 = AX_12A(id = 2)
+AX_12A.connectAll()
+motor1.wheelMode()
+motor2.wheelMode()
+motor1.setMovingSpeed(512) # 50% power
+motor2.setMovingSpeed(512) # 50% power
+```
+
+Sample Code 2:
+See Sample Code 2 in [`getMovingSpeed()`](#getmovingspeed), below.
 
 #### `disableTorque()`
  * Inputs: None
@@ -501,76 +608,6 @@ motor5.setCCWAngleLimit(745)
 # This sets the new CCW Angle Limit to 745, as we did using the PhantomX Pincher Arm.
 ```
 
-#### `wheelMode()`
-  * Inputs: None
-  * Returns: None
-  * Description: Sets the Dynamixel to Wheel Mode, where it can't accept a Goal Position, but it can spin freely, using [`setMovingSpeed`](#setmovingspeed). The Dynamixel enters Wheel Mode when both the CW and CCW Angle Limits are set to 0, so this is a shortcut that sets both of those values to 0. This command modifies the EEPROM twice, so it includes two 0.25 second sleeps to avoid corrupting the firmware.
-
-Sample Code:
-```python
-motor1 = AX_12A(id = 1)
-motor1.connect()
-motor1.wheelMode()
-motor1.setMovingSpeed(512)
-# motor1 should now be spinning at 50% power.
-```
-
-#### `jointMode()`
-  * Inputs: None
-  * Returns: 'None', or an error message if command fails.
-  * Description: Changes the Dynamixel to position control. It will reset the angle limits to whatever they were before the Dynamixel was set to wheel mode, or the default if prior values are not available.
-
-Sample Code:
-```python
-from ax12a import AX_12A
-
-motor1 = AX_12A(id = 1)
-motor1.connect()
-motor1.jointMode()
-motor1.setGoalPosition(512)
-AX_12A.waitForMotors()
-```
-
-Sample Code 2:
-```python
-from ax12a import AX_12A
-from time import sleep
-
-motor1 = AX_12A(id = 1)
-motor1.connect()
-motor1.setCwAngleLimit(200)
-motor1.setCcwAngleLimit(745)
-# Move most of the way towards CW angle limit
-motor1.setGoalPosition(256)
-AX_12A.waitForMotors()
-# Now, spin freely for a few seconds then stop
-motor1.wheelMode()
-motor1.setMovingSpeed(512)
-sleep(5)
-motor1.setMovingSpeed(0)
-# Go back to joint mode, it will use limits of 200 & 745
-motor1.jointMode()
-```
-
-#### `setGoalPosition()`
-  * Inputs: One integer, the position that you want the servo to move to, between 0 and 1023.
-  * Returns: `None`, or an error message if command fails.
-  * Description: This (or its shortcut [`setPose()`](#setpose)) is the most important command when using a Dynamixel in Joint Mode.  In Joint Mode, the Dynamixel AX-12A can move within a 300 degree arc.  This arc is divided up into sections of about 0.3°, numbered 0-1023.  This command tells the Dynamixel to move to a new position in that arc.  Make sure you look at [`waitForMotors()`](#waitformotors) to see about waiting for the motor to get to its new position.
-  
-Sample Code:
-```python
-motor1 = AX_12A(id = 1)
-motor1.connect()
-# Rotate back and forth indefinitely
-while True:
-  # Move as far as possible in CW direction
-  motor1.setGoalPosition(0)
-  AX_12A.waitForMotors()
-  # Move as far as possible in CCW direction
-  motor1.setGoalPosition(1023)
-  AX_12A.waitForMotors()
-```
-
 #### `setID()`
   * Inputs: One integer, the new ID value for the Dynamixel.  This must be between 0 and 253.
   * Returns: `None`, or an error message if command fails.
@@ -600,25 +637,4 @@ while True:
   motor1.setLED(0)
   sleep(1)
 ```
-
-#### `setMovingSpeed()`
-  * Inputs: An integer, -1023 to 1023 (in wheel mode) or 0 to 1023 (in joint mode)
-  * Returns: `None`, or an error message if command fails.
-  * Description: This is the most important command when using a Dynamixel in Wheel Mode.  Sets the Dynamixel to move at the speed set by the input value, where positive values are in the CCW direction and negative values are CW.
-
-In Joint Mode, it sets the speed that the motor moves when it changes to its new Goal Position.  Note that, in general (up to a point), if you run the Dynamixel at lower speed, the torque should increase, so if your robot is having a hard time reaching a certain position because the load is too high, set the moving speed lower and try again.
-
-Sample Code 1 (basic goForward with two motors):
-```python
-motor1 = AX_12A(id = 1)
-motor2 = AX_12A(id = 2)
-AX_12A.connectAll()
-motor1.wheelMode()
-motor2.wheelMode()
-motor1.setMovingSpeed(512) # 50% power
-motor2.setMovingSpeed(512) # 50% power
-```
-
-Sample Code 2:
-See Sample Code 2 in [`getMovingSpeed()`](#getmovingspeed), above.
 
