@@ -2,7 +2,9 @@
 
 Requires an install of the [Dynamixel SDK](https://github.com/ROBOTIS-GIT/DynamixelSDK) -- thank you Leon!!! I am using the Python libraries, downloaded June 19, 2020 (So, version 3.7.21), and Python 3.6.9 on Ubuntu 18.04.
 
-I haven't tested it on anything else, but it should be pretty broadly compatible with Python 3 on any platform.
+I haven't tested it on anything else, but it should be pretty broadly compatible with Python 3 on any platform. Update: I've tested it on Python 3.7 on a Mac running OS 10.15, and all went well.
+
+Notice that, in a Linux or Mac environment, when you connect the USB-to-Serial device to provide a data connection to the motors, the device is typically activated with owner set to root.  The scripts in this libary will need write permission to the device, which will not be granted by default.  So, you either need to change the owner of the device to the current user, or you need to run the scripts in this library as root.  If you are going to run the scripts as root, you will need to run the setup.py script in the Dynamixel SDK as root, or else this library will not be able to find the SDK library, which is required.
 
 This provides complete, high-level controls in a python environment for the Dynamixel AX-12A.
 
