@@ -11,7 +11,7 @@ from time import sleep
 class AX_12A:
 
     instances = []
-    
+
     def __init__(self, id = 1, baudRate = 1000000, devicePort='/dev/ttyUSB0', printInfo=True):
         """
         Inputs: None
@@ -21,7 +21,7 @@ class AX_12A:
         self.id                     = id
         self.baudRate               = baudRate
         # Default devicePort assumes Linux and first USB port. Windows:"COM*" Mac:"/dev/tty.usbserial-*"
-        self.devicePort             = devicePort 
+        self.devicePort             = devicePort
         self.printInfo              = printInfo
         self.connected              = False
         # These will agree with values stored in Dynamixel memory typically
@@ -73,7 +73,7 @@ class AX_12A:
         self.ADDR_PUNCH                 = 48    # Size 2 bytes  Default Value 32
         ### End of RAM area
         self.PROTOCOL_VERSION           = 1.0
-                
+
     def __dxlSetter(self, numBytes, memAddr, valueToSet):
         if self.connected:
             if numBytes == 1:
@@ -97,7 +97,7 @@ class AX_12A:
         else:
             if self.printInfo: print("[ERROR] ID:", self.id, "Motor not connected. Run .connect() method.")
             return 3
-    
+
     def __dxlGetter(self, numBytes, memAddr):
         if self.connected:
             if numBytes == 1:
@@ -121,7 +121,7 @@ class AX_12A:
         else:
             if self.printInfo: print("[ERROR] ID:", self.id, "Motor not connected. Run .connect() method.")
             return 3
-              
+
 
 ################################################################################
 ##########                        EEPROM Area                         ##########
@@ -510,7 +510,7 @@ class AX_12A:
 
     def setGoalPosition(self, goalPositionValue):
         # New goal position has to be between the angle limits.
-        if goalPositionValue < self.ccwAngleLimit and goalPositionValue > self.cwAngleLimit:
+        if goalPositionValue <= self.ccwAngleLimit and goalPositionValue >= self.cwAngleLimit:
             goalPositionError = self.__dxlSetter(2, self.ADDR_GOAL_POSITION, goalPositionValue)
             if goalPositionError == 0:
                 if self.printInfo: print("[WRITE] ID:", self.id, "Goal Position set to", goalPositionValue)
@@ -529,7 +529,7 @@ class AX_12A:
         movingSpeed, movingSpeedError = self.__dxlGetter(2, self.ADDR_MOVING_SPEED)
         if movingSpeed >=0 and movingSpeed < 1024: adjMovingSpeed = movingSpeed
         elif movingSpeed < 2048: adjMovingSpeed = -(movingSpeed - 1024)
-        else: 
+        else:
             adjMovingSpeed = None
             if self.printInfo:
                 print("[ERROR] ID:", self.id, "getMovingSpeed found value out of range:", movingSpeed)
@@ -542,9 +542,9 @@ class AX_12A:
     def setMovingSpeed(self, movingSpeed):
         # The Dynamixel stores speed as follows:
         # There are 2 bytes/16 bits available.  It uses only 10 or 11 of them.
-        # The first 10 bits provide the absolute value of the speed. 
+        # The first 10 bits provide the absolute value of the speed.
         # This 10-bit integer is what is used in Joint Mode, the 11th bit is ignored.
-        # Notice that, in Joint Mode, speed does not determine direction; the 
+        # Notice that, in Joint Mode, speed does not determine direction; the
         # location of the goal position determines direction.
         # The 11th bit determines direction in Wheel Mode -- 0=CCW and 1=CW.
         # So this function is set up thinking of it as an 11-bit signed integer:
@@ -706,8 +706,8 @@ class AX_12A:
 
             # Set port baudrate
             if self.portHandler.setBaudRate(self.baudRate):
-                if self.printInfo: 
-                    print("[INFO] ID:", self.id, "Set the baudrate of the port to", self.baudRate) 
+                if self.printInfo:
+                    print("[INFO] ID:", self.id, "Set the baudrate of the port to", self.baudRate)
                     print("[INFO] ID:", self.id, "Attempting to connect to motor.")
             else:
                 self.connected = False
@@ -716,7 +716,7 @@ class AX_12A:
             # Attempt to write
             torqueEnableError = self.enableTorque()
             if torqueEnableError:
-                if self.printInfo: 
+                if self.printInfo:
                     print("[ERROR] ID:", self.id, "Write attempt failed in AX-12A connect() method.")
                     self.connected = False
             else:
@@ -733,7 +733,7 @@ class AX_12A:
                     return
 
             # If both Angle Limits are zero, we're in wheel mode, otherwise, in joint mode.
-            # If in Joint mode, check if Present Position is out of range. 
+            # If in Joint mode, check if Present Position is out of range.
             # If so, move to end of range.
             if self.connected:
                 self.cwAngleLimit = self.getCwAngleLimit()
@@ -758,7 +758,7 @@ class AX_12A:
         motors = AX_12A.listInstances()
         for motor in motors:
             motor.connect()
-            
+
     @classmethod
     def getAll(cls, method):
         """
@@ -771,7 +771,7 @@ class AX_12A:
         for motor in motors:
             gets.append(eval(method))
         return gets
-            
+
     @classmethod
     def setAll(cls, method, value):
         """
@@ -790,7 +790,7 @@ class AX_12A:
     def setPose(cls, positions):
         """
         Inputs: List of integers, each a goal position of an AX_12A() instance.
-            You can avoid setting a value for one or more motors by putting 'None' 
+            You can avoid setting a value for one or more motors by putting 'None'
                 at each location in the list that you want to skip.
             Assumes that AX_12A() has a list of instances which can be retrieved via AX_12A.listInstances()
         Returns: None
@@ -802,7 +802,7 @@ class AX_12A:
             if position != None:
                 motors[index].setGoalPosition(position)
         return
-    
+
     @classmethod
     def readPose(cls):
         motors = AX_12A.listInstances()
@@ -812,7 +812,7 @@ class AX_12A:
                 pos = motor.getPresentPosition()
                 motorPositions.append(pos)
         return motorPositions
-        
+
     @classmethod
     def waitForMotors(cls):
         # The localPrintInfo list stores the current state of self.printInfo for each motor.
